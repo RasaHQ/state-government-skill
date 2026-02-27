@@ -1,5 +1,7 @@
 # State Government Services Bot — Rasa Pro & CALM
 
+[![Launch on Hello Rasa](https://hello.rasa.com/launch.svg)](https://hello.rasa.com/go?repo=rasahq/state-government-skill)
+
 A self-contained [Rasa Pro](https://rasa.com/rasa-pro/) chatbot for state-level citizen services. Built with the LLM-native CALM approach: **flows, custom actions, and contextual response rephrasing** — no intents, stories, or rules required.
 
 ## Capabilities
