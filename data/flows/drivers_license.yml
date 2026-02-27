@@ -1,0 +1,30 @@
+flows:
+  check_license_status:
+    name: "check driver's license status"
+    description: Check the status of the user's Georgia driver's license. Use this when the user wants to know if their license is active, expired, or suspended.
+    steps:
+      - collect: license_type
+        description: the type of driver's license (Class C, Class CP, or Class D)
+        ask_before_filling: true
+      - action: utter_checking_license
+      - action: action_check_license_status
+        next:
+          - if: slots.api_error
+            then:
+              - action: utter_api_error
+                next: END
+          - else:
+              - action: utter_license_status
+                next: END
+
+  renew_drivers_license:
+    name: "renew driver's license"
+    description: Provide information about how to renew a Georgia driver's license. Use this when the user wants to renew their license or asks about the renewal process.
+    steps:
+      - action: utter_license_renew_info
+
+  apply_drivers_license:
+    name: "apply for driver's license"
+    description: Provide information about how to apply for a new Georgia driver's license. Use this when the user wants to get a new license or asks about the application process.
+    steps:
+      - action: utter_license_apply_info

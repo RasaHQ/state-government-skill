@@ -1,0 +1,16 @@
+test_cases:
+  - test_case: user checks license status - class C
+    steps:
+      - user: "check my license status"
+      - utter: utter_checking_license
+      - utter: utter_license_status
+
+  - test_case: user asks how to renew license
+    steps:
+      - user: "how do I renew my driver's license?"
+      - utter: utter_license_renew_info
+
+  - test_case: user asks how to apply for a license
+    steps:
+      - user: "how do I get a Georgia driver's license?"
+      - utter: utter_license_apply_info

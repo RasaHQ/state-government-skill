@@ -1,0 +1,31 @@
+flows:
+  check_snap_eligibility:
+    name: "check SNAP eligibility"
+    description: Check if the user may be eligible for SNAP benefits (food stamps) based on household size and income. Use this when the user asks if they qualify for SNAP or food stamps.
+    steps:
+      - collect: household_size
+        description: the number of people in the user's household
+        ask_before_filling: true
+      - collect: monthly_income
+        description: the user's total monthly gross household income in dollars
+        ask_before_filling: true
+      - action: utter_checking_snap
+      - action: action_check_snap_eligibility
+        next:
+          - if: slots.api_error
+            then:
+              - action: utter_api_error
+                next: END
+          - if: slots.snap_eligible
+            then:
+              - action: utter_snap_eligible
+                next: END
+          - else:
+              - action: utter_snap_not_eligible
+                next: END
+
+  snap_general_info:
+    name: "SNAP general information"
+    description: Provide general information about SNAP benefits (food stamps) in Georgia. Use this when the user asks general questions about what SNAP is, how to apply, or where to get more information.
+    steps:
+      - action: utter_snap_general_info

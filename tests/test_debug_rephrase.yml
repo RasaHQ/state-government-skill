@@ -1,0 +1,15 @@
+test_cases:
+  - test_case: short thanks
+    steps:
+      - user: "thanks"
+      - utter: utter_free_chitchat_response
+
+  - test_case: casual ok
+    steps:
+      - user: "ok"
+      - utter: utter_free_chitchat_response
+
+  - test_case: got it
+    steps:
+      - user: "got it"
+      - utter: utter_free_chitchat_response

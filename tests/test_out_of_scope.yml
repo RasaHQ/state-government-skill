@@ -1,0 +1,10 @@
+test_cases:
+  - test_case: user asks about vehicle registration - not supported
+    steps:
+      - user: "how do I register my car in Georgia?"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks about taxes - not supported
+    steps:
+      - user: "how do I file my Georgia state taxes?"
+      - utter: utter_unsupported_action

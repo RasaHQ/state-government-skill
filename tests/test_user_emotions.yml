@@ -1,0 +1,12 @@
+test_cases:
+  - test_case: user is rude - handle gracefully
+    steps:
+      - user: "you're useless"
+      - utter: utter_insult_response
+
+  - test_case: user says ok after getting help
+    steps:
+      - user: "how do I renew my license?"
+      - utter: utter_license_renew_info
+      - user: "ok"
+      - utter: utter_free_chitchat_response

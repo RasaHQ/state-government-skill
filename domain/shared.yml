@@ -1,0 +1,13 @@
+version: "3.1"
+
+slots:
+  return_value:
+    type: any
+    mappings:
+      - type: controlled
+
+responses:
+  utter_welcome_message:
+    - text: "Hi there! I'm Ask GeorgiaGov. I can help with driver's license info and SNAP benefits."
+  utter_refuse:
+    - text: "I'm sorry, I can't help with that. Is there anything else I can assist you with?"

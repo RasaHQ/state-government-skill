@@ -1,0 +1,23 @@
+flows:
+  pattern_correction:
+    description: Confirm a previous correction of a slot value.
+    steps:
+      - noop: true
+        next: END
+  pattern_completed:
+    description: anything else
+    if: False
+    steps:
+      - noop: true
+        next: END
+  pattern_search:
+    name: pattern_search
+    description: Flow for handling knowledge-based questions
+    steps:
+    - id: 0_action_trigger_search
+      next: END
+      action: action_trigger_search
+  pattern_chitchat:
+    description: handle chitchat
+    steps:
+      - action: utter_free_chitchat_response

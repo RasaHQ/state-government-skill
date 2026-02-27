@@ -1,0 +1,41 @@
+flows:
+  greeting:
+    description: greet the user
+    steps:
+      - action: utter_greeting
+
+  what_can_you_do:
+    description: answer user questions like "what can you do" and questions about your capabilities
+    run_pattern_completed: false
+    steps:
+      - action: utter_what_can_you_do
+
+  who_are_you:
+    description: respond to users asking who you are or what you are
+    run_pattern_completed: false
+    steps:
+      - action: utter_who_are_you
+
+  user_goodbye:
+    description: user says goodbye or is leaving
+    run_pattern_completed: false
+    steps:
+      - action: utter_goodbye
+
+  insult:
+    description: respond to insults or rude comments
+    run_pattern_completed: false
+    steps:
+      - action: utter_insult_response
+
+  help_general:
+    description: respond to general help requests
+    run_pattern_completed: false
+    steps:
+      - action: utter_help
+
+  chitchat_general:
+    description: user is making casual conversation or small talk, or short messages like "ok", "thanks", "cool".
+    run_pattern_completed: false
+    steps:
+      - action: utter_free_chitchat_response

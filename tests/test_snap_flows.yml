@@ -1,0 +1,16 @@
+test_cases:
+  - test_case: user checks SNAP eligibility - eligible
+    steps:
+      - user: "am I eligible for SNAP?"
+      - utter: utter_checking_snap
+      - utter: utter_snap_eligible
+
+  - test_case: user asks general SNAP info
+    steps:
+      - user: "what is SNAP?"
+      - utter: utter_snap_general_info
+
+  - test_case: user asks how to apply for food stamps
+    steps:
+      - user: "how do I apply for food stamps?"
+      - utter: utter_snap_general_info

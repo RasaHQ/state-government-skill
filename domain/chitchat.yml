@@ -1,0 +1,19 @@
+responses:
+  utter_greeting:
+    - text: "Hi! I'm Ask GeorgiaGov. I can help with driver's license info and SNAP benefits. What can I do for you?"
+
+  utter_what_can_you_do:
+    - text: "I can help with:\n- **Driver's license** — check status, renewal info, or how to apply\n- **SNAP benefits** — check eligibility or get general info\n\nFor other Georgia state services, call 1-800-GEORGIA (1-800-436-7442)."
+
+  utter_who_are_you:
+    - text: "I'm Ask GeorgiaGov, an automated assistant for Georgia state services. I can help with driver's license questions and SNAP benefits."
+
+  utter_goodbye:
+    - text: "Goodbye! Visit georgia.gov anytime for more information."
+    - text: "Bye! Feel free to come back if you have more questions."
+
+  utter_insult_response:
+    - text: "I'm sorry you feel that way. I'm here to help with Georgia state services if you need assistance."
+
+  utter_help:
+    - text: "I can help with:\n- **Driver's license** — check status, renewal, or application info\n- **SNAP benefits** — eligibility check or general info\n\nWhat would you like help with?"

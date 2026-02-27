@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "smart-thermostat-skill"
+version = "0.1.0"
+description = "A demo Rasa skill for checking thermostat status"
+requires-python = ">=3.10,<3.12"
+dependencies = [
+    "rasa-pro[monitoring]",
+    "python-dotenv>=1.0.0",
+    "httpx[socks]",
+]
+
+# [tool.uv.sources]
+# rasa-pro = { path = "/Users/alannichol/Developer/rasa-private", editable = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["actions"]
+
+[tool.hatch.build]
+include = [
+    "actions/**/*",
+]
+exclude = [
+    "data/**/*",
+    "domain/**/*",
+    "*.yml",
+    "*.yaml",
+    "*.json",
+]
