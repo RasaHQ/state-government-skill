@@ -11,6 +11,8 @@ dependencies = [
     "rasa-pro[monitoring]",
     "python-dotenv>=1.0.0",
     "httpx[socks]",
+    "fastmcp",
+    "uvicorn",
 ]
 
 # [tool.uv.sources]

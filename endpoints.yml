@@ -1,3 +1,6 @@
+action_endpoint:
+  actions_module: "actions"
+
 mcp_servers:
   - name: georgia_mcp_server
     url: http://localhost:8090/
