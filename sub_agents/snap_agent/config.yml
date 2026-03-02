@@ -1,0 +1,10 @@
+agent:
+  name: snap_agent
+  protocol: rasa
+  description: Checks SNAP (food stamps) eligibility based on household size and income.
+
+connections:
+  mcp_servers:
+    - name: georgia_mcp_server
+      include_tools:
+        - check_snap_eligibility

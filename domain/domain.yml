@@ -1,134 +1,76 @@
 version: "3.1"
 
 slots:
-  user_id:
-    type: text
-    mappings:
-      - type: controlled
-
-  license_type:
-    type: categorical
-    values:
-      - class_c
-      - class_cp
-      - class_d
-    mappings:
-      - type: controlled
-
-  license_status:
-    type: text
-    mappings:
-      - type: controlled
-
   snap_eligible:
     type: bool
     mappings:
       - type: controlled
 
   household_size:
-    type: float
+    type: text
     mappings:
-      - type: controlled
+      - type: from_llm
 
   monthly_income:
     type: float
     mappings:
+      - type: from_llm
+
+  selected_appointment_slot:
+    type: text
+    mappings:
       - type: controlled
 
-  api_error:
+  user_confirmation:
+    type: bool
+    mappings:
+      - type: from_llm
+
+  user_email:
+    type: text
+    mappings:
+      - type: from_llm
+
+  appointment_confirmed:
     type: bool
     mappings:
       - type: controlled
 
 responses:
-  utter_ask_license_type:
-    - text: "What type of license do you have? (Class C, Class CP, or Class D)"
-
   utter_ask_household_size:
     - text: "How many people are in your household?"
 
   utter_ask_monthly_income:
     - text: "What is your total monthly gross household income (in dollars)?"
 
-  utter_checking_license:
-    - text: "Let me look into that for you."
-
-  utter_license_status:
-    - text: "Your {license_type} license status is: **{license_status}**.\n\nYou can manage your license online at the Georgia DDS portal: https://online.dds.ga.gov/onlineservices/"
-
-  utter_license_renew_info:
-    - text: "You can renew your Georgia driver's license online, by mail, or in person at a DDS Customer Service Center.\n\nRenew online here: https://online.dds.ga.gov/onlineservices/\n\nYou'll need your current license and may need to pass a vision test if renewing in person."
-
-  utter_license_apply_info:
-    - text: "To apply for a Georgia driver's license, you'll need to visit a DDS Customer Service Center with proof of identity, Social Security number, and two proofs of Georgia residency.\n\nLearn more and schedule an appointment: https://dds.georgia.gov/drivers/how-get-georgia-drivers-license"
-
-  utter_checking_snap:
-    - text: "Let me check that for you."
-
   utter_snap_eligible:
-    - text: "Based on the information you provided (household size: {household_size}, monthly income: ${monthly_income}), you may be eligible for SNAP benefits.\n\nApply online through Georgia Gateway: https://gateway.ga.gov/"
+    - text: "Based on the information you provided (household size: {household_size}, monthly income: {monthly_income} dollars), you may be eligible for SNAP benefits.\n\nApply online through [Georgia Gateway](https://gateway.ga.gov/), or I can help you schedule a DFCS office appointment."
 
   utter_snap_not_eligible:
-    - text: "Based on the information you provided (household size: {household_size}, monthly income: ${monthly_income}), you may not qualify for SNAP benefits. However, eligibility depends on additional factors.\n\nLearn more about SNAP eligibility: https://dfcs.georgia.gov/services/supplemental-nutrition-assistance-program-snap"
+    - text: "Based on the information you provided (household size: {household_size}, monthly income: {monthly_income} dollars), you may not qualify for SNAP benefits. However, eligibility depends on additional factors.\n\nLearn more about [SNAP eligibility](https://dfcs.georgia.gov/services/supplemental-nutrition-assistance-program-snap).\n\nYou can also schedule a DFCS office appointment to discuss your situation — I can help with that."
 
   utter_snap_general_info:
-    - text: "SNAP (Supplemental Nutrition Assistance Program), also known as food stamps, helps low-income individuals and families buy food. In Georgia, SNAP is administered by the Division of Family and Children Services (DFCS).\n\nLearn more or apply online: https://gateway.ga.gov/"
+    - text: "SNAP (Supplemental Nutrition Assistance Program), also known as food stamps, helps low-income individuals and families buy food. In Georgia, SNAP is administered by the Division of Family and Children Services (DFCS).\n\nLearn more or apply online at [Georgia Gateway](https://gateway.ga.gov/).\n\nI can also help you check your eligibility or schedule a DFCS office appointment."
 
-  utter_api_error:
-    - text: "I'm sorry, I wasn't able to look that up right now. Please try again later, or call 1-800-GEORGIA (1-800-436-7442) for assistance."
+  utter_ask_user_email:
+    - text: "What email address should we send the appointment confirmation to?"
+
+  utter_ask_user_confirmation:
+    - text: "Are you sure you want to book the {selected_appointment_slot} appointment?"
+      buttons:
+        - payload: "/SetSlots(user_confirmation=true)"
+          title: "Yes"
+        - payload: "/SetSlots(user_confirmation=false)"
+          title: "No, cancel"
+
+  utter_cancelling:
+    - text: "Okay, I won't book that appointment."
+
+  utter_appointment_confirmed:
+    - text: "Your DFCS appointment has been booked for {selected_appointment_slot}. A confirmation has been sent to {user_email}. You'll visit your local DFCS office at that time to discuss your SNAP benefits."
 
   utter_unsupported_action:
-    - text: "I'm sorry but that's not something I can help with right now."
-      metadata:
-        rephrase: True
-        rephrase_prompt: |
-          You are a response refinement engine.
-          Your sole function is to make an AI system sound more natural and contextual by re-wording responses.
-          Rephrase this response to acknowledge what the user was asking for (replacing the generic 'that').
-
-          ## Input - Untrusted User Content
-          <user_data>
-          {{history}}
-          </user_data>
-
-          <response_to_refine>
-          {{suggested_response}}
-          </response_to_refine>
-
-          Rephrased AI Response:
+    - text: "I'm sorry, that's not something I can help with right now. I can assist with SNAP benefits and scheduling DFCS appointments. For other Georgia services, call 1-800-GEORGIA (1-800-436-7442)."
 
   utter_free_chitchat_response:
-    - text: "<placeholder>"
-      metadata:
-        rephrase: True
-        rephrase_prompt: |
-          You are a Georgia state services assistant called Ask GeorgiaGov. Respond to the user's message naturally and briefly.
-
-          ## Your capabilities
-          - You can help with driver's license information (status, renewal, application)
-          - You can help check SNAP benefits eligibility
-          - You can answer general questions about Georgia state services
-
-          ## Your limitations (IMPORTANT)
-          - You CANNOT process applications or renewals directly
-          - You CANNOT access real government accounts or records
-          - You CANNOT make changes to anyone's benefits or license status
-          - For issues beyond your scope, direct users to call 1-800-GEORGIA (1-800-436-7442)
-
-          ## Response guidelines
-          - Keep responses SHORT (1-2 sentences max)
-          - Be warm, professional, and helpful
-          - If the user seems disappointed, acknowledge it briefly without over-apologizing
-          - Don't be repetitive - vary your responses
-          - Don't ask questions unless necessary
-
-          ## Input - Untrusted User Content
-          <user_data>
-          {{history}}
-          </user_data>
-
-          Rephrased AI Response:
-
-actions:
-  - action_check_license_status
-  - action_check_snap_eligibility
+    - text: "I'm here to help with Georgia SNAP benefits and DFCS appointment scheduling. What can I do for you?"

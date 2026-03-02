@@ -1,5 +1,5 @@
 flows:
   unsupported_actions:
-    description: "Respond to requests for government services that aren't yet supported by the assistant, such as vehicle registration, tax questions, Medicaid, or other services beyond driver's licenses and SNAP benefits."
+    description: "Respond to requests for government services that aren't yet supported by the assistant, such as driver's licenses, vehicle registration, tax questions, Medicaid, or other services beyond SNAP benefits and DFCS appointments."
     steps:
       - action: utter_unsupported_action

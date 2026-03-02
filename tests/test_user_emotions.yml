@@ -6,7 +6,7 @@ test_cases:
 
   - test_case: user says ok after getting help
     steps:
-      - user: "how do I renew my license?"
-      - utter: utter_license_renew_info
+      - user: "what is SNAP?"
+      - utter: utter_snap_general_info
       - user: "ok"
       - utter: utter_free_chitchat_response

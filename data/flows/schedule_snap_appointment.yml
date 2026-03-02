@@ -1,0 +1,35 @@
+flows:
+  schedule_snap_appointment:
+    name: "schedule SNAP appointment"
+    description: Help the user schedule a DFCS office appointment for SNAP services. Use this when the user wants to book, schedule, or make an appointment related to SNAP or food stamps.
+    steps:
+      - call: appointment_selector
+        exit_if:
+          - slots.selected_appointment_slot is not null
+      - collect: user_confirmation
+        ask_before_filling: true
+        description: Confirmation from the user whether they want to go ahead with the selected time slot
+        next:
+          - if: slots.user_confirmation == True
+            then: collect_email
+          - else:
+              - action: utter_cancelling
+                next: END
+      - id: collect_email
+        collect: user_email
+        description: the user's email address for appointment confirmation
+        ask_before_filling: true
+      - id: call_book_appointment
+        call: book_appointment
+        mcp_server: georgia_mcp_server
+        mapping:
+          input:
+            - param: appointment_slot
+              slot: selected_appointment_slot
+          output:
+            - slot: appointment_confirmed
+              value: result.structuredContent.appointment_confirmed
+        next: confirm_appointment
+      - id: confirm_appointment
+        action: utter_appointment_confirmed
+        next: END

@@ -9,13 +9,10 @@ flows:
       - collect: monthly_income
         description: the user's total monthly gross household income in dollars
         ask_before_filling: true
-      - action: utter_checking_snap
-      - action: action_check_snap_eligibility
+      - call: snap_agent
+        exit_if:
+          - slots.snap_eligible is not null
         next:
-          - if: slots.api_error
-            then:
-              - action: utter_api_error
-                next: END
           - if: slots.snap_eligible
             then:
               - action: utter_snap_eligible

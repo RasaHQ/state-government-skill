@@ -35,7 +35,7 @@ flows:
       - action: utter_help
 
   chitchat_general:
-    description: user is making casual conversation or small talk, or short messages like "ok", "thanks", "cool".
+    description: Only start this flow if it is the ONLY flow being started. User is making casual conversation or small talk, or short messages like "ok", "thanks", "cool". 
     run_pattern_completed: false
     steps:
       - action: utter_free_chitchat_response

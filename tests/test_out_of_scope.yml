@@ -8,3 +8,53 @@ test_cases:
     steps:
       - user: "how do I file my Georgia state taxes?"
       - utter: utter_unsupported_action
+
+  - test_case: user asks to renew drivers license - not supported
+    steps:
+      - user: "I need to renew my driver's license"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks about license status - not supported
+    steps:
+      - user: "check my driver's license status"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks how to apply for license - not supported
+    steps:
+      - user: "how do I get a Georgia driver's license?"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks about Medicaid - not supported
+    steps:
+      - user: "how do I apply for Medicaid in Georgia?"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks about voting - not supported
+    steps:
+      - user: "how do I register to vote?"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks about birth certificate - not supported
+    steps:
+      - user: "I need a copy of my birth certificate"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks about weather - not supported
+    steps:
+      - user: "what's the weather like in Atlanta today?"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks for a recipe - not supported
+    steps:
+      - user: "can you give me a recipe for peach cobbler?"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks about property taxes - not supported
+    steps:
+      - user: "when are property taxes due in Georgia?"
+      - utter: utter_unsupported_action
+
+  - test_case: user asks about unemployment - not supported
+    steps:
+      - user: "how do I file for unemployment benefits?"
+      - utter: utter_unsupported_action

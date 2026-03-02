@@ -1,0 +1,10 @@
+agent:
+  name: appointment_selector
+  protocol: rasa
+  description: Helps users select an available DFCS office appointment slot for SNAP services.
+
+connections:
+  mcp_servers:
+    - name: georgia_mcp_server
+      include_tools:
+        - query_available_appointments
