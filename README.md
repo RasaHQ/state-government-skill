@@ -1,15 +1,13 @@
-# State Government Services Bot — Rasa Pro & CALM
+# State Government Services Bot — Rasa Pro CALM + MCP Sub-Agents
 
-[![Launch on Hello Rasa](https://hello.rasa.com/launch.svg)](https://hello.rasa.com/go?repo=rasahq/state-government-skill)
-
-A self-contained [Rasa Pro](https://rasa.com/rasa-pro/) chatbot for state-level citizen services. Built with the LLM-native CALM approach: **flows, custom actions, and contextual response rephrasing** — no intents, stories, or rules required.
+A [Rasa Pro](https://rasa.com/rasa-pro/) chatbot demonstrating SNAP benefits eligibility checking and DFCS appointment scheduling. Built with the LLM-native CALM approach and MCP sub-agent architecture — **no intents, stories, rules, or custom Python actions**.
 
 ## Capabilities
 
-- **Driver's license** — Status lookup, renewal info, and new application guidance
-- **SNAP benefits** — Eligibility check (collects household size + income) and general program info
-- **Knowledge search (RAG)** — FAQ-style answers about offices, required documents, timelines, etc. via `EnterpriseSearchPolicy`
-- **Graceful boundaries** — Out-of-scope requests get a polite redirect; prompt injection resistance via untrusted-content tagging
+- **SNAP eligibility check** — Collects household size and income, calls an MCP tool via sub-agent, and returns eligibility results
+- **DFCS appointment scheduling** — Sub-agent queries available slots, user confirms, and a direct MCP tool call books the appointment
+- **General SNAP info** — Program overview with links to apply online
+- **Graceful boundaries** — Out-of-scope requests (license, taxes, Medicaid, etc.) get a polite redirect
 
 ## Quick Start
 
@@ -19,45 +17,67 @@ cp .env.example .env
 
 uv sync
 uv run rasa train
+
+# Start the MCP server (separate terminal)
+uv run mcp_server/server.py
+
+# Launch the inspector
 uv run rasa inspect
 ```
+
+## Architecture
+
+```
+User → Rasa (CompactLLMCommandGenerator + FlowPolicy) → Flow
+  → snap_agent (sub-agent)            → mcp_server → check_snap_eligibility
+  → appointment_selector (sub-agent)   → mcp_server → query_available_appointments
+  → book_appointment (direct MCP call) → mcp_server → book_appointment
+```
+
+All service logic lives in the MCP server. Sub-agents are config-only (no custom Python). The bot uses Rasa's built-in response rephraser so templated responses sound natural.
 
 ## Project Structure
 
 ```
-├── config.yml                  # Pipeline: CompactLLMCommandGenerator + EnterpriseSearchPolicy
+├── config.yml                     # Pipeline: CompactLLMCommandGenerator + FlowPolicy
+├── endpoints.yml                  # MCP server connection, rephraser config, model groups
 ├── domain/
-│   ├── domain.yml              # Slots and responses for license + SNAP flows
-│   ├── chitchat.yml            # Greeting, goodbye, help responses
-│   └── shared.yml              # Shared slots and refusal responses
+│   ├── domain.yml                 # Slots and responses for SNAP + appointments
+│   ├── chitchat.yml               # Greeting, goodbye, help responses
+│   └── shared.yml                 # Shared slots and refusal responses
 ├── data/flows/
-│   ├── drivers_license.yml     # License status, renewal, and application flows
-│   ├── snap_benefits.yml       # SNAP eligibility check and general info flows
-│   ├── unsupported.yml         # Catch-all for out-of-scope requests
-│   ├── chitchat.yml            # Greeting, goodbye, help, small talk flows
-│   └── decline_behavior_modification.yml
-├── actions/
-│   ├── action_check_license_status.py   # Mock license status lookup
-│   └── action_check_snap_eligibility.py # Mock SNAP eligibility check
-├── prompt_templates/
-│   ├── command_generator_prompt.jinja2
-│   └── response-rephraser-template.jinja2
-├── rephraser.py                # Custom rephraser with message truncation
-├── docs/faq/georgia_services.txt  # Knowledge base for enterprise search
-└── tests/                      # E2E test cases
+│   ├── snap_benefits.yml          # SNAP eligibility check + general info flows
+│   ├── schedule_snap_appointment.yml  # Appointment query, confirm, and book flow
+│   ├── unsupported.yml            # Catch-all for out-of-scope requests
+│   └── chitchat.yml               # Greeting, goodbye, help, small talk flows
+├── mcp_server/
+│   └── server.py                  # FastMCP server with 3 tools (mock data)
+├── sub_agents/
+│   ├── snap_agent/config.yml      # MCPOpenAgent → check_snap_eligibility
+│   └── appointment_selector/config.yml  # MCPOpenAgent → query_available_appointments
+└── tests/                         # E2E test cases
 ```
 
 ## Key Patterns
 
-1. **LLM-based routing** — `CompactLLMCommandGenerator` interprets user messages and selects the right flow from descriptions alone.
-2. **Async custom actions** — `action_check_license_status` and `action_check_snap_eligibility` call mock APIs and set slots. In production, these would call real state agency APIs.
-3. **Slot collection** — SNAP eligibility flow collects `household_size` and `monthly_income` before running the eligibility check.
-4. **Conditional branching** — Flows branch on API results (eligible/not eligible, active/expired/suspended, error).
-5. **Contextual rephrasing** — Responses are rephrased by an LLM to sound natural while staying within defined capabilities.
+1. **LLM-based routing** — `CompactLLMCommandGenerator` reads flow descriptions and selects the right flow. No NLU training data needed.
+2. **MCP sub-agents** — Config-only `MCPOpenAgent` definitions that call MCP tools and set slots. No custom Python classes or prompt templates.
+3. **Direct MCP tool calls** — The appointment booking step calls `book_appointment` directly from a flow using `call:` + `mcp_server:` + `mapping:` syntax, bypassing the need for agent reasoning.
+4. **Slot collection** — Flows collect user input (`from_llm` slots) before calling sub-agents. The MCP server handles type casting.
+5. **Response rephrasing** — Rasa's built-in `rephrase` NLG rewrites templated responses via GPT-4o so they sound natural and contextual.
+
+## Testing
+
+```bash
+# Run all E2E tests
+uv run rasa test e2e tests/
+
+# Run a single test file
+uv run rasa test e2e tests/test_out_of_scope.yml
+```
 
 ## Learn More
 
 - [Rasa Pro Documentation](https://rasa.com/docs/rasa-pro/)
 - [Building AI Assistants with CALM](https://rasa.com/docs/rasa-pro/calm)
-- [Custom Actions Guide](https://rasa.com/docs/rasa-pro/concepts/custom-actions)
-- [Enterprise Search (RAG)](https://rasa.com/docs/rasa-pro/concepts/policies/enterprise-search-policy)
+- [MCP Sub-Agents](https://rasa.com/docs/rasa-pro/concepts/sub-agents)

@@ -20,15 +20,9 @@ flows:
         description: the user's email address for appointment confirmation
         ask_before_filling: true
       - id: call_book_appointment
-        call: book_appointment
-        mcp_server: georgia_mcp_server
-        mapping:
-          input:
-            - param: appointment_slot
-              slot: selected_appointment_slot
-          output:
-            - slot: appointment_confirmed
-              value: result.structuredContent.appointment_confirmed
+        call: booking_agent
+        exit_if:
+          - slots.appointment_confirmed is not null
         next: confirm_appointment
       - id: confirm_appointment
         action: utter_appointment_confirmed

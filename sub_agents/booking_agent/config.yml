@@ -1,0 +1,10 @@
+agent:
+  name: booking_agent
+  protocol: rasa
+  description: Books a DFCS office appointment at the specified time slot.
+
+connections:
+  mcp_servers:
+    - name: georgia_mcp_server
+      include_tools:
+        - book_appointment
